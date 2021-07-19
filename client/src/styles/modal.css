@@ -1,0 +1,26 @@
+.modal-wrap {
+  background: rgba(0, 0, 0, 0.75);
+  position: absolute;
+  top: -100%;
+  height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+}
+
+.modal-wrap.active {
+  top: 0;
+  left: 0;
+}
+
+.modal {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 10px;
+  padding: 40px;
+  border-radius: 10px;
+  background: white;
+}

@@ -1,0 +1,6 @@
+.todo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-flow: column;
+}

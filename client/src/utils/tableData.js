@@ -1,0 +1,38 @@
+export const tableData = [
+  {
+    taskId: "Task__001",
+    taskTitle: "Paragon",
+    createdBy: "Aman",
+    assignedTo: "Moheb",
+    status: "Created",
+    createdOn: "09/10/2020",
+    lastUpdated: "10/10/2020",
+  },
+  {
+    taskId: "Task__002",
+    taskTitle: "Hexagon",
+    createdBy: "Aman",
+    assignedTo: "Moheb",
+    status: "Ongoing",
+    createdOn: "09/10/2020",
+    lastUpdated: "10/10/2020",
+  },
+  {
+    taskId: "Task__003",
+    taskTitle: "Decagon",
+    createdBy: "Aman",
+    assignedTo: "Moheb",
+    status: "Completed",
+    createdOn: "09/10/2020",
+    lastUpdated: "10/10/2020",
+  },
+  {
+    taskId: "Task__004",
+    taskTitle: "Iamgone",
+    createdBy: "Aman",
+    assignedTo: "Moheb",
+    status: "Created",
+    createdOn: "09/10/2020",
+    lastUpdated: "10/10/2020",
+  },
+];

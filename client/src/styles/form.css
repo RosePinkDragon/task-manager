@@ -1,0 +1,32 @@
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+
+.form-elements {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 20px;
+}
+
+.form-elements input {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid #dcdcdc;
+}
+
+.err {
+  margin-bottom: 10px;
+  color: #7c0a02;
+  font-size: 1rem;
+}
+
+form button {
+  margin: 0px 0 0;
+}

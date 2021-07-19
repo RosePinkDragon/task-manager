@@ -1,0 +1,65 @@
+.filters {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #81d7cf;
+  margin: 10px 0;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.filters-wrap {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filters-wrap .btn {
+  white-space: nowrap;
+}
+
+.search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search input {
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.filter svg {
+  margin-left: 5px;
+}
+
+.filter-drop {
+  position: absolute;
+  width: 150px;
+  background: #fff;
+  border-radius: 10px;
+  top: 60px;
+  left: 10px;
+  padding: 10px;
+  opacity: 0;
+  visibility: none;
+  box-shadow: 0 2px 5px 1px rgba(64, 60, 67, 0.16);
+  transition: all 0.1s ease-out;
+}
+
+.filter-drop.active {
+  top: 30px;
+  opacity: 1;
+  visibility: visible;
+}

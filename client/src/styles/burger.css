@@ -1,0 +1,40 @@
+/* animated hamburber menu button */
+.burger-btn {
+  display: none;
+  width: 20px;
+  height: 2px;
+  border-radius: 5px;
+  background: #000;
+  transition: all 0.4s ease-in-out;
+  margin: 0 15px;
+  position: relative;
+  transform: rotate(180deg);
+}
+
+.burger-btn.active {
+  background: transparent;
+  transform: rotate(180deg);
+}
+
+.burger-btn::before,
+.burger-btn::after {
+  content: "";
+  position: absolute;
+  width: 25px;
+  height: 2px;
+  border-radius: 5px;
+  transition: all 0.4s ease-in-out;
+  background: #000;
+}
+.burger-btn::before {
+  transform: translateY(-8px);
+}
+.burger-btn::after {
+  transform: translateY(8px);
+}
+.burger-btn.active::before {
+  transform: translateY(0px) rotate(-45deg);
+}
+.burger-btn.active::after {
+  transform: translateY(0px) rotate(45deg);
+}
