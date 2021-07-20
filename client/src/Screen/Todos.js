@@ -1,4 +1,6 @@
+import Cookies from "js-cookie";
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Filters } from "../components/Filters";
 import Table from "../components/Table";
 import logo from "../images/logo.png";
@@ -8,7 +10,14 @@ import "../styles/todos.css";
 
 const Todos = () => {
   const [active, setActive] = useState(false);
+  const history = useHistory();
+  const [checkUser, setCheckUser] = useState(true);
 
+  if (!Cookies.get("token")) {
+    history.push("/");
+  }
+
+  if (checkUser) return <p>Loading...</p>;
   return (
     <div className="wrap">
       <div className="header-wrap">

@@ -1,18 +1,37 @@
+require("dotenv").config();
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer, AuthenticationError } = require("apollo-server-express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const models = require("./models");
-
 const app = express();
 const port = 3001;
 
 app.use(cors());
+app.use(cookieParser());
+
+const context = ({ req }) => {
+  console.log(req);
+  const token = req.headers.authorization || "";
+
+  try {
+    return ({ id, email } = jwt.verify(token.split(" ")[1], SECRET_KEY));
+  } catch (e) {
+    throw new AuthenticationError(
+      "Authentication token is invalid, please log in"
+    );
+  }
+};
 
 const startServer = async () => {
-  const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context,
+  });
   await server.start();
   server.applyMiddleware({ app });
   models.sequelize.sync();
@@ -22,9 +41,6 @@ const startServer = async () => {
       `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
     );
   });
-  // const todos = await models.Todo.findByPk(1);
-  // const todos = await models.Todo.destroy({ where: { id: 1 } });
-  // console.log(todos);
 };
 
 startServer();

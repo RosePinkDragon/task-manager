@@ -5,7 +5,7 @@ import { filterData } from "../utils/filterData";
 import Modal from "../components/Modal";
 import { useMutation } from "@apollo/client";
 import { ADD_TODO } from "../Graphql/todoQueries";
-import { Valid } from "../utils/Invalid";
+import { valid } from "../utils/Invalid";
 
 export const Filters = () => {
   const initState = {
@@ -58,18 +58,16 @@ export const Filters = () => {
   const addTaskHandler = (e) => {
     e.preventDefault();
 
-    const valid = Valid(taskTitle, createdBy, assignedTo, status);
+    const validData = valid(taskTitle, createdBy, assignedTo, status);
 
-    if (valid !== true) {
+    if (validData !== true) {
       console.log("here");
       return setErr(valid);
     }
     addTodo();
     if (!loading && error) {
-      console.log("here2");
       return setErr("Duplicate or improper Data");
-    } else if (!loading && data.createTodo) {
-      console.log("here3");
+    } else if (!loading && data?.createTodo) {
       setActive(!active);
       setTaskData(initState);
       setErr();
