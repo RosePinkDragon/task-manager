@@ -7,8 +7,8 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = Cookies.get("token");
-  console.log(_);
+  // const token = Cookies.get("token");
+  const token = 'Cookies.get("token")';
   return {
     headers: {
       ...headers,
@@ -16,8 +16,6 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
-
-// console.log(authLink);
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),

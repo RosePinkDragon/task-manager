@@ -26,8 +26,11 @@ export const ADD_TODO = gql`
 export const LOGIN_USER = gql`
   query Query($email: String!, $password: String!) {
     loginUser(email: $email, password: $password) {
-      name
-      email
+      user {
+        name
+        email
+      }
+      token
     }
   }
 `;
