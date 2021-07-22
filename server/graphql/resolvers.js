@@ -30,7 +30,6 @@ const resolvers = {
         const auth = await bcrypt.compare(password, user.password);
         if (auth) {
           const token = createToken(user)
-          console.log({user, token})
           return {user, token};
         }
         throw Error("Incorrect Details");
@@ -40,8 +39,14 @@ const resolvers = {
   },
 
   Mutation: {
-    async createTodo(_, { taskTitle, createdBy, assignedTo, status }) {
+    async createTodo(_, { taskTitle, createdBy, assignedTo, status },{user}) {
       
+      const isUser = await models.User.findOne({where:{email: user.email}})
+      if(!isUser || isUser === null){
+        throw Error("User Not Found")
+      }
+      createdBy = isUser.dataValues.name
+      status= "Created"
       const eval = valid(taskTitle, createdBy, assignedTo, status)
 
       if(eval !== true){
@@ -59,6 +64,13 @@ const resolvers = {
     async createUser(_, { name, email, password }) {
       const users = await models.User.create({ name, email, password });
       return users;
+    },
+
+    async updateTodo(_, { id, status }) {
+      const todo = await models.Todo.findByPk(id)
+      const updateTodo = await todo.update({status:status});
+      console.log(updateTodo.dataValues)
+      return [ updateTodo.dataValues]
     },
 
     async deleteTodo(_, { id }) {
