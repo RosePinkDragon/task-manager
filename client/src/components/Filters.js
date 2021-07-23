@@ -5,7 +5,6 @@ import { filterData } from "../utils/filterData";
 import Modal from "../components/Modal";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_TODO, GET_USERS } from "../Graphql/todoQueries";
-import { valid } from "../utils/Invalid";
 
 export const Filters = () => {
   const initState = {
@@ -36,9 +35,6 @@ export const Filters = () => {
     error: user_error,
     data: user_data,
   } = useQuery(GET_USERS);
-
-  !user_loading && !user_error && console.log(user_data.getUsers);
-  user_error && console.log(user_error);
 
   const [addTodo, { loading, error, data }] = useMutation(ADD_TODO, {
     variables: {
@@ -128,8 +124,9 @@ export const Filters = () => {
                     activeDrop === 1 ? "active" : ""
                   }`}
                 >
-                  {user_data.getUsers.map((data) => (
+                  {user_data.getUsers.map((data, idx) => (
                     <p
+                      key={idx}
                       onClick={() => {
                         handleActiveDrop(1);
                         setTaskData({

@@ -35,16 +35,42 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const UPDATE_TODO = gql`
+  mutation Query($id: Int!, $status: String!) {
+    updateTodo(id: $id, status: $status) {
+      success
+      todo {
+        id
+      }
+    }
+  }
+`;
+
+export const GOOGLE_LOGIN = gql`
+  query Query($email: String!, $name: String!) {
+    loginGoogle(email: $email, name: $name) {
+      user {
+        name
+        email
+      }
+      token
+    }
+  }
+`;
+
 export const GET_TODOS = gql`
-  query Query {
-    getTodo {
-      id
-      taskTitle
-      createdBy
-      status
-      assignedTo
-      createdAt
-      updatedAt
+  query Query($filterTitle: String!, $sortBy: String!) {
+    getTodo(filterTitle: $filterTitle, sortBy: $sortBy) {
+      count
+      todo {
+        id
+        taskTitle
+        createdBy
+        status
+        assignedTo
+        createdAt
+        updatedAt
+      }
     }
   }
 `;

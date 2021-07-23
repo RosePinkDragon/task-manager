@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Filters } from "../components/Filters";
+import Pagination from "../components/Pagination";
 import Table from "../components/Table";
 import logo from "../images/logo.png";
 import userLogo from "../images/userLogo.png";
@@ -39,6 +40,7 @@ const Todos = () => {
       <div className="body todo">
         <Filters active={active} />
         <Table />
+        <Pagination />
       </div>
     </div>
   );

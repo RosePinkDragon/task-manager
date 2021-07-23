@@ -52,14 +52,18 @@
   top: 60px;
   left: 10px;
   padding: 10px;
+  z-index: 10;
   opacity: 0;
   visibility: none;
   box-shadow: 0 2px 5px 1px rgba(64, 60, 67, 0.16);
+  transform-origin: bottom;
+  transform: scaleY(0);
   transition: all 0.1s ease-out;
 }
 
 .filter-drop.active {
   top: 30px;
   opacity: 1;
+  transform: scaleY(1);
   visibility: visible;
 }
