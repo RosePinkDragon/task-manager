@@ -4,9 +4,9 @@ table {
   box-shadow: 0 5px 10px #e1e5ee;
   background-color: white;
   text-align: left;
-  overflow: hidden;
   margin: 10px 0;
   white-space: nowrap;
+  border-radius: 10px;
 }
 table thead {
   box-shadow: 0 5px 10px #e1e5ee;
@@ -33,26 +33,71 @@ table .title {
   text-decoration: none;
   color: #6b52ee;
 }
+table .status svg {
+  margin-left: 5px;
+  fill: inherit;
+}
+
+table .status-data {
+  position: relative;
+}
+
+table .dropdown {
+  position: absolute;
+  top: 100px;
+  left: 15px;
+  z-index: 21;
+  background: #fff;
+  box-shadow: 0 5px 10px #e1e5ee;
+  width: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  opacity: 0;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  transition: all 0.2s ease-in-out;
+}
+
+table .dropdown.active {
+  top: 45px;
+  transform: scaleY(1);
+  opacity: 1;
+}
+table .dropdown li {
+  list-style: none;
+  padding: 10px;
+}
+table .dropdown li:hover {
+  background: #dcdcdc;
+}
+
 table .status {
-  border-radius: 0.2rem;
+  border-radius: 5px;
   background-color: red;
-  padding: 0.2rem 1rem;
+  padding: 7px 10px 5px;
   text-align: left;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 table .status-pending {
   width: fit-content;
   background-color: #fff0c2;
   color: #a68b00;
+  fill: #a68b00;
 }
 table .status-completed {
   width: fit-content;
   background-color: #c8e6c9;
   color: #388e3c;
+  fill: #388e3c;
 }
 table .status-created {
   width: fit-content;
   background-color: #ffcdd2;
   color: #c62828;
+  fill: #c62828;
 }
 table .amount {
   text-align: right;

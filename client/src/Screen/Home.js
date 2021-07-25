@@ -6,8 +6,9 @@ import todo from "../images/todo.svg";
 import logo from "../images/logo.png";
 import "../styles/form.css";
 import { useLazyQuery } from "@apollo/client";
-import { LOGIN_USER } from "../Graphql/todoQueries";
+import { GOOGLE_LOGIN, LOGIN_USER } from "../Graphql/todoQueries";
 import Cookies from "js-cookie";
+import GoogleLogin from "react-google-login";
 
 const Home = () => {
   const history = useHistory();
@@ -57,6 +58,42 @@ const Home = () => {
     }
   };
 
+  const [
+    googleLogin,
+    { loading: google_loading, error: google_error, data: google_data },
+  ] = useLazyQuery(GOOGLE_LOGIN);
+
+  const failRes = ({ error }) => {
+    setErr("");
+    if (error) {
+      setErr("Error Loggin in");
+    }
+  };
+
+  useEffect(() => {
+    if (!google_loading && google_error) {
+      return setErr(google_error.message);
+    }
+    if (!google_loading && google_data) {
+      Cookies.set("authToken", google_data.loginGoogle.token, {
+        expires: 7000,
+      });
+      history.push("/todos");
+    }
+  }, [google_data, google_error, google_loading, history]);
+
+  const responseGoogle = (response) => {
+    const { Ve: name, Nt: email } = response.dt;
+    googleLogin({ variables: { name: name, email: email } });
+    if (!google_loading && google_error) {
+      console.log(google_error);
+    }
+
+    if (!google_loading && google_data) {
+      console.log(google_data);
+    }
+  };
+
   return (
     <div className="wrap">
       <div className="header-wrap">
@@ -87,6 +124,14 @@ const Home = () => {
           </div>
           {err && <div className="err">{err}</div>}
           <button type="submit">Login</button>
+          <GoogleLogin
+            style={{ marginTop: "10px" }}
+            clientId="661123491779-84biq8g74takpcp5631iaj3jainb7avv.apps.googleusercontent.com"
+            buttonText="Login with Google"
+            onSuccess={responseGoogle}
+            onFailure={failRes}
+            cookiePolicy="single_host_origin"
+          />
         </form>
       </Modal>
       <div className="home body">

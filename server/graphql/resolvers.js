@@ -1,7 +1,8 @@
 const models = require("../models");
 const bcrypt = require("bcrypt");
 const valid = require("../utils/Invalid");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = ({name, id, email}) => {
@@ -10,9 +11,16 @@ const createToken = ({name, id, email}) => {
 
 const resolvers = {
   Query: {
-    async getTodo() {
-      const todos = await models.Todo.findAll();
-      return todos;
+    async getTodo(_, {filterTitle,sortBy}) {
+      const {count, rows : todo} = await models.Todo.findAndCountAll({
+        where: {
+          taskTitle: {
+            [Op.like]: filterTitle || '%'
+          }
+        },
+      });
+
+      return {count, todo} 
     },
 
     async getSingleTodo(_, { id }) {
@@ -22,6 +30,18 @@ const resolvers = {
 
     async getUsers() {
       return models.User.findAll();
+    },
+
+    async loginGoogle(_, {name, email}) {
+      const checkUser =  await models.User.findOne({where: {email:email}})
+      if(checkUser === null){
+        const user= await models.User.create({ name, email, password: "from_Google" });
+        const token = createToken(user)
+        return {user,token};
+      }
+      
+      const token = createToken(user)
+          return {user, token};
     },
 
     async loginUser(_, { email, password }, {req}) {
@@ -68,9 +88,11 @@ const resolvers = {
 
     async updateTodo(_, { id, status }) {
       const todo = await models.Todo.findByPk(id)
-      const updateTodo = await todo.update({status:status});
-      console.log(updateTodo.dataValues)
-      return [ updateTodo.dataValues]
+      if(todo === null){
+        return {success: false}
+      }
+      const {dataValues} = await todo.update({status:status});
+      return { success:true , dataValues }
     },
 
     async deleteTodo(_, { id }) {

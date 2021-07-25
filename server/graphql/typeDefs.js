@@ -13,6 +13,11 @@ const typeDefs = gql`
     email: String!
   }
 
+  type filteredTodos {
+    count: Int!
+    todo: [Todo!]!
+  }
+
   type Todo {
     id: Int!
     taskTitle: String!
@@ -32,11 +37,18 @@ const typeDefs = gql`
     user: User!
   }
 
+  type Update {
+    success: Boolean!
+    todo: Todo
+  }
+
   type Query {
-    getTodo: [Todo!]!
+    getTodo(filterTitle: String!, sortBy: String!): filteredTodos!
+
     getSingleTodo(id: Int!): [Todo!]!
     getUsers: [User!]!
     loginUser(email: String!, password: String!): Login!
+    loginGoogle(email: String!, name: String!): Login!
   }
 
   type Mutation {
@@ -46,10 +58,9 @@ const typeDefs = gql`
       assignedTo: String!
       status: String!
     ): Todo!
-
-    createUser(name: String!, email: String!, password: String!): User!
+    updateTodo(id: Int!, status: String!): Update!
     deleteTodo(id: Int!): Delete!
-    updateTodo(id: Int!, status: String!): [Todo!]!
+    createUser(name: String!, email: String!, password: String!): User!
   }
 `;
 module.exports = typeDefs;
