@@ -11,7 +11,6 @@ const typeDefs = gql`
     id: Int!
     name: String!
     email: String!
-    password: String!
   }
 
   type Todo {

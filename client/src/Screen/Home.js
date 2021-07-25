@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { isEmail } from "validator";
 import Modal from "../components/Modal";
@@ -24,31 +24,32 @@ const Home = () => {
   const changeHandler = (e) => {
     const { value, id } = e.target;
     setFormData({ ...formData, [id]: value });
-    console.log(formData);
   };
 
-  const [loadUser, { loading, error, data }] = useLazyQuery(LOGIN_USER, {
-    variables: { email: email, password: password },
-  });
+  const [loadUser, { loading, error, data }] = useLazyQuery(LOGIN_USER);
 
-  const submitHandler = (e) => {
+  useEffect(() => {
+    if (data && data.loginUser && !loading) {
+      history.push("/todos");
+    }
+    if (error && !loading) {
+      setErr("Invalid User");
+    }
+  }, [data, loading, error, history]);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
     setErr();
     if (!isEmail(email)) {
+      console.log("checked email");
       return setErr("Invalid Email");
     }
     if (!email || !password) {
+      console.log("checked mail and pass");
       return setErr("Please Enter Correct Data");
     }
 
-    loadUser();
-    if (!loading && error) {
-      setErr("Invalid User Details");
-    }
-
-    if (!loading && data.loginUser) {
-      history.push("/todos");
-    }
+    loadUser({ variables: { email: email, password: password } });
   };
 
   return (
