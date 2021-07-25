@@ -4,8 +4,8 @@ const valid = require("../utils/Invalid");
 const jwt = require("jsonwebtoken")
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
-const createToken = (name) => {
-  return jwt.sign({name}, process.env.LLO, { expiresIn: maxAge });
+const createToken = ({name, id, email}) => {
+  return jwt.sign({name, id, email}, process.env.SECRET, { expiresIn: maxAge });
 };
 
 const resolvers = {
@@ -24,14 +24,14 @@ const resolvers = {
       return models.User.findAll();
     },
 
-    async loginUser(_, { email, password }, {req, res}) {
+    async loginUser(_, { email, password }, {req}) {
       const user = await models.User.findOne({ where: { email: email } });
       if (user !== null) {
         const auth = await bcrypt.compare(password, user.password);
         if (auth) {
-          const token = createToken(user);
-          res.cookie = ("AuthCookie", token, { maxAge:maxAge, httpOnly: true })
-          return user;
+          const token = createToken(user)
+          console.log({user, token})
+          return {user, token};
         }
         throw Error("Incorrect Details");
       }

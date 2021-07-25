@@ -27,11 +27,16 @@ const typeDefs = gql`
     status: String!
   }
 
+  type Login {
+    token: String!
+    user: User!
+  }
+
   type Query {
     getTodo: [Todo!]!
     getSingleTodo(id: Int!): [Todo!]!
     getUsers: [User!]!
-    loginUser(email: String!, password: String!): User!
+    loginUser(email: String!, password: String!): Login!
   }
 
   type Mutation {

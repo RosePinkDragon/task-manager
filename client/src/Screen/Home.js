@@ -28,15 +28,6 @@ const Home = () => {
 
   const [loadUser, { loading, error, data }] = useLazyQuery(LOGIN_USER);
 
-  useEffect(() => {
-    if (data && data.loginUser && !loading) {
-      history.push("/todos");
-    }
-    if (error && !loading) {
-      setErr("Invalid User");
-    }
-  }, [data, loading, error, history]);
-
   const submitHandler = async (e) => {
     e.preventDefault();
     setErr();
@@ -49,7 +40,16 @@ const Home = () => {
       return setErr("Please Enter Correct Data");
     }
 
-    loadUser({ variables: { email: email, password: password } });
+    loadUser({
+      variables: { email: email, password: password },
+      onCompleted: () => {
+        console.log("done", data);
+      },
+    });
+
+    if (!loading && error) {
+      console.log(error);
+    }
   };
 
   return (

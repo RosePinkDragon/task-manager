@@ -1,37 +1,38 @@
 require("dotenv").config();
 const express = require("express");
 const { ApolloServer, AuthenticationError } = require("apollo-server-express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
 
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const models = require("./models");
 const app = express();
 const port = 3001;
+const jwt = require("jsonwebtoken");
 
-app.use(cors());
-app.use(cookieParser());
-
-const context = ({ req }) => {
-  console.log(req);
-  const token = req.headers.authorization || "";
-
-  try {
-    return ({ id, email } = jwt.verify(token.split(" ")[1], SECRET_KEY));
-  } catch (e) {
-    throw new AuthenticationError(
-      "Authentication token is invalid, please log in"
-    );
-  }
+const checkUser = (token) => {
+  jwt.verify(token, process.env.SECRET, async (err, decodedToken) => {
+    if (err) {
+      return (user = null);
+    } else {
+      console.log(decodedToken);
+      let user = await models.User.findBypk(decodedToken.id);
+      const { id, email, name } = user;
+      return { id, email, name };
+    }
+  });
 };
 
 const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context,
+    context: ({ req }) => {
+      const token = req.headers.authorization || "";
+      const user = checkUser(token);
+      return { user };
+    },
   });
+
   await server.start();
   server.applyMiddleware({ app });
   models.sequelize.sync();
@@ -44,9 +45,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-// db.sequelize.sync().then((req) => {
-//   app.listen(PORT, () => {
-//     console.log(`server up and running ${PORT}`);
-//   });
-// });
