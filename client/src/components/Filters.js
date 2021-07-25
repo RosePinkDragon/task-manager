@@ -5,8 +5,10 @@ import { filterData } from "../utils/filterData";
 import Modal from "../components/Modal";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_TODO, GET_USERS } from "../Graphql/todoQueries";
+import { TodosVar } from "../Apollo/cache";
 
 export const Filters = () => {
+  console.log(TodosVar());
   const initState = {
     taskTitle: "",
     createdBy: "",
