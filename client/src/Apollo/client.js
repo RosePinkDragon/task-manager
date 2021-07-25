@@ -7,12 +7,11 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // const token = Cookies.get("token");
-  const token = 'Cookies.get("token")';
+  const token = Cookies.get("authToken");
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
+      authorization: token ? token : "",
     },
   };
 });

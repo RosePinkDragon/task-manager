@@ -48,3 +48,12 @@ export const GET_TODOS = gql`
     }
   }
 `;
+
+export const GET_USERS = gql`
+  query Query {
+    getUsers {
+      id
+      name
+    }
+  }
+`;

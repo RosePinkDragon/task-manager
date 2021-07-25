@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/filters.css";
 import { AiFillCaretDown } from "react-icons/ai";
 import { filterData } from "../utils/filterData";
 import Modal from "../components/Modal";
-import { useMutation } from "@apollo/client";
-import { ADD_TODO } from "../Graphql/todoQueries";
+import { useMutation, useQuery } from "@apollo/client";
+import { ADD_TODO, GET_USERS } from "../Graphql/todoQueries";
 import { valid } from "../utils/Invalid";
 
 export const Filters = () => {
@@ -12,11 +12,12 @@ export const Filters = () => {
     taskTitle: "",
     createdBy: "",
     assignedTo: "",
-    status: "",
+    status: "Created",
   };
 
   const [taskData, setTaskData] = useState(initState);
   const [err, setErr] = useState();
+  const [activeDrop, setActiveDrop] = useState(0);
   const [active, setActive] = useState(false);
   const [clicked, setClicked] = useState();
   const [filter, setFilter] = useState({
@@ -24,24 +25,45 @@ export const Filters = () => {
     createdBy: "",
     assignTo: "",
     status: "",
-    createdOn: "",
   });
 
   const { taskTitle, createdBy, assignedTo, status } = taskData;
 
   const { search } = filter;
 
+  const {
+    loading: user_loading,
+    error: user_error,
+    data: user_data,
+  } = useQuery(GET_USERS);
+
+  !user_loading && !user_error && console.log(user_data.getUsers);
+  user_error && console.log(user_error);
+
   const [addTodo, { loading, error, data }] = useMutation(ADD_TODO, {
     variables: {
-      taskTitle: taskTitle,
-      createdBy: createdBy,
-      assignedTo: assignedTo,
-      status: status,
+      taskTitle,
+      createdBy,
+      assignedTo,
+      status,
     },
     onError(err) {
       console.log(err);
     },
   });
+
+  useEffect(() => {
+    if (!loading && error) {
+      return setErr(error.message);
+    }
+  }, [error, loading]);
+
+  useEffect(() => {
+    if (!loading && data) {
+      setErr("");
+      setActive(!active);
+    }
+  }, [loading, data]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -55,27 +77,18 @@ export const Filters = () => {
     setClicked(idx);
   };
 
+  const handleActiveDrop = (idx) => {
+    console.log("here");
+    if (activeDrop === idx) {
+      return setActiveDrop("0");
+    }
+    setActiveDrop(idx);
+  };
+
   const addTaskHandler = (e) => {
     e.preventDefault();
-
-    const validData = valid(taskTitle, createdBy, assignedTo, status);
-
-    if (validData !== true) {
-      console.log("here");
-      return setErr(valid);
-    }
+    setErr();
     addTodo();
-    if (!loading && error) {
-      return setErr("Duplicate or improper Data");
-    } else if (!loading && data?.createTodo) {
-      setActive(!active);
-      setTaskData(initState);
-      setErr();
-      return;
-    } else {
-      console.log("here4");
-      setErr("Unknown Error");
-    }
   };
 
   return (
@@ -96,26 +109,52 @@ export const Filters = () => {
             <input
               type="text"
               id="createdBy"
-              value={createdBy}
+              value={"Current User"}
               onChange={handleChange}
+              disabled={true}
             />
           </div>
           <div className="form-elements">
             <label htmlFor="assignedTo">Assign To</label>
-            <input
-              type="text"
-              id="assignedTo"
-              value={assignedTo}
-              onChange={handleChange}
-            />
+            <div className="labelStyle" onClick={() => handleActiveDrop(1)}>
+              {assignedTo}
+            </div>
+            {!user_loading ? (
+              user_error ? (
+                <p>Error Fetching users: {user_error.message}</p>
+              ) : (
+                <div
+                  className={`selectDropdown ${
+                    activeDrop === 1 ? "active" : ""
+                  }`}
+                >
+                  {user_data.getUsers.map((data) => (
+                    <p
+                      onClick={() => {
+                        handleActiveDrop(1);
+                        setTaskData({
+                          ...taskData,
+                          assignedTo: data.name,
+                        });
+                      }}
+                    >
+                      {data.name}
+                    </p>
+                  ))}
+                </div>
+              )
+            ) : (
+              <p>Loading Users</p>
+            )}
           </div>
           <div className="form-elements">
             <label htmlFor="status">Status</label>
             <input
               type="text"
-              id="status"
+              id="createdBy"
               value={status}
               onChange={handleChange}
+              disabled={true}
             />
           </div>
           {err && <div className="err">{err}</div>}

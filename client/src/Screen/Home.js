@@ -7,6 +7,7 @@ import logo from "../images/logo.png";
 import "../styles/form.css";
 import { useLazyQuery } from "@apollo/client";
 import { LOGIN_USER } from "../Graphql/todoQueries";
+import Cookies from "js-cookie";
 
 const Home = () => {
   const history = useHistory();
@@ -25,30 +26,34 @@ const Home = () => {
     const { value, id } = e.target;
     setFormData({ ...formData, [id]: value });
   };
-
   const [loadUser, { loading, error, data }] = useLazyQuery(LOGIN_USER);
 
-  const submitHandler = async (e) => {
+  useEffect(() => {
+    if (!loading && error) {
+      return setErr(error.message);
+    }
+    if (!loading && data) {
+      Cookies.set("authToken", data.loginUser.token, { expires: 7000 });
+      setErr("");
+      setActive(!active);
+      history.push("/todos");
+    }
+  }, [active, data, error, history, loading]);
+
+  const submitHandler = (e) => {
     e.preventDefault();
     setErr();
     if (!isEmail(email)) {
-      console.log("checked email");
       return setErr("Invalid Email");
     }
     if (!email || !password) {
-      console.log("checked mail and pass");
       return setErr("Please Enter Correct Data");
     }
 
-    loadUser({
-      variables: { email: email, password: password },
-      onCompleted: () => {
-        console.log("done", data);
-      },
-    });
-
-    if (!loading && error) {
-      console.log(error);
+    if (err !== "") {
+      loadUser({ variables: { email: email, password: password } });
+    } else {
+      return;
     }
   };
 
@@ -65,7 +70,8 @@ const Home = () => {
             <input
               type="text"
               id="email"
-              value={formData.id}
+              name="email"
+              value={email}
               onChange={changeHandler}
             />
           </div>
@@ -74,7 +80,8 @@ const Home = () => {
             <input
               type="password"
               id="password"
-              value={formData.id}
+              name="password"
+              value={password}
               onChange={changeHandler}
             />
           </div>

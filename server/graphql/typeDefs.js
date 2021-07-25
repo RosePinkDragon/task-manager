@@ -49,6 +49,7 @@ const typeDefs = gql`
 
     createUser(name: String!, email: String!, password: String!): User!
     deleteTodo(id: Int!): Delete!
+    updateTodo(id: Int!, status: String!): [Todo!]!
   }
 `;
 module.exports = typeDefs;

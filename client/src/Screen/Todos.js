@@ -1,6 +1,6 @@
-import { useQuery } from "@apollo/client";
+// import {  } from "@apollo/client";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Filters } from "../components/Filters";
 import Table from "../components/Table";
@@ -10,13 +10,18 @@ import "../styles/burger.css";
 import "../styles/todos.css";
 
 const Todos = () => {
-  const [active, setActive] = useState(false);
   const history = useHistory();
+
+  const [active, setActive] = useState(false);
   const [checkUser, setCheckUser] = useState(true);
 
-  if (!Cookies.get("token")) {
-    history.push("/");
-  }
+  useEffect(() => {
+    if (!Cookies.get("authToken")) {
+      history.push("/");
+    } else {
+      setCheckUser(false);
+    }
+  }, [history]);
 
   if (checkUser) return <p>Loading...</p>;
   return (
