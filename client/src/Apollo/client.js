@@ -1,10 +1,17 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, createHttpLink, gql } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import Cookies from "js-cookie";
+import { cache } from "./cache";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3001/graphql",
 });
+
+export const typeDefs = gql`
+  extend type Query {
+    Todos: [Todo]!
+  }
+`;
 
 const authLink = setContext((_, { headers }) => {
   const token = Cookies.get("authToken");
@@ -18,7 +25,8 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: cache,
+  typeDefs,
 });
 
 export default client;

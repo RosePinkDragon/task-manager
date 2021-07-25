@@ -1,21 +1,28 @@
 import React, { useState } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_TODOS, UPDATE_TODO } from "../Graphql/todoQueries";
 import "../styles/table.css";
 import { AiFillCaretDown } from "react-icons/ai";
+import { TodosVar } from "../Apollo/cache";
 
 const Table = () => {
   const [activeDrop, setActiveDrop] = useState("0");
 
-  const { loading, error, data } = useQuery(GET_TODOS, {
+  const { loading, error, data, refetch } = useQuery(GET_TODOS, {
     variables: { filterTitle: "%", sortBy: "" },
+    onCompleted({ getTodo }) {
+      TodosVar(getTodo.todo);
+    },
   });
   const [
     updateStatus,
     { loading: update_loading, data: update_data, error: update_error },
-  ] = useMutation(UPDATE_TODO);
-  const { todo, count } = !loading && !error && data?.getTodo;
-  !loading && console.log(data.getTodo.todo);
+  ] = useMutation(UPDATE_TODO, {
+    onCompleted() {
+      refetch();
+    },
+  });
+  const { todo } = !loading && !error && data?.getTodo;
 
   const statStyle = (style) => {
     if (style === "Created") return "created";
@@ -36,6 +43,7 @@ const Table = () => {
     });
 
     handleDrop(idx);
+    // create a toast to handle this
     if (!update_loading && update_error) {
       console.log(update_error);
     }
