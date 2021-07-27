@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const models = require("./models");
+const casual = require("casual");
 const app = express();
 const port = 3001;
 
@@ -22,6 +23,14 @@ const checkUser = (token) => {
   return user;
 };
 
+const mocks = {
+  User: () => ({
+    id: () => casual.integer(0, 120),
+    email: casual.email,
+    name: casual.name,
+  }),
+};
+
 const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
@@ -31,6 +40,7 @@ const startServer = async () => {
       const user = checkUser(token);
       return { user };
     },
+    mocks,
   });
 
   await server.start();

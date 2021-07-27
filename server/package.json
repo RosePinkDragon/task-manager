@@ -30,5 +30,9 @@
     "sequelize-auto": "^0.8.3",
     "sequelize-cli": "^6.2.0",
     "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "casual": "^1.6.2",
+    "jest": "^27.0.6"
   }
 }
