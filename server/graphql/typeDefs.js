@@ -43,8 +43,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    getTodo(filterTitle: String!, sortBy: String!): filteredTodos!
-
+    getTodo(
+      filterTitle: String!
+      sortBy: String!
+      order: String!
+      limit: Int!
+      offset: Int!
+    ): filteredTodos!
     getSingleTodo(id: Int!): [Todo!]!
     getUsers: [User!]!
     loginUser(email: String!, password: String!): Login!

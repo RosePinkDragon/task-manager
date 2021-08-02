@@ -8,20 +8,7 @@ export const TodosVar = makeVar([]);
 export const CountVar = makeVar(0);
 
 export const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        Todos: {
-          read() {
-            return TodosVar();
-          },
-        },
-        countPages: {
-          read() {
-            return CountVar();
-          },
-        },
-      },
-    },
+  dataIdFromObject(responseObject) {
+    // console.log(responseObject);
   },
 });

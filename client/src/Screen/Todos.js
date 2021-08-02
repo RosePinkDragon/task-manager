@@ -38,9 +38,8 @@ const Todos = () => {
         </div>
       </div>
       <div className="body todo">
-        <Filters active={active} />
+        <Filters />
         <Table />
-        <Pagination />
       </div>
     </div>
   );

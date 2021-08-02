@@ -11,13 +11,17 @@ const createToken = ({name, id, email}) => {
 
 const resolvers = {
   Query: {
-    async getTodo(_, {filterTitle,sortBy}) {
+    async getTodo(_, {filterTitle, sortBy, order, offset, limit}) {
+      console.log(offset)
       const {count, rows : todo} = await models.Todo.findAndCountAll({
         where: {
           taskTitle: {
             [Op.like]: filterTitle || '%'
           }
         },
+        offset: offset || 0,
+        limit:limit || 10,
+        order:  [[sortBy,order]],
       });
 
       return {count, todo} 
@@ -92,7 +96,7 @@ const resolvers = {
         return {success: false}
       }
       const {dataValues} = await todo.update({status:status});
-      return { success:true , dataValues }
+      return { success:true , todo:dataValues }
     },
 
     async deleteTodo(_, { id }) {
