@@ -4,19 +4,19 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { filterData } from "../utils/filterData";
 import Modal from "../components/Modal";
 import { useMutation, useQuery } from "@apollo/client";
-import { ADD_TODO, GET_USERS } from "../Graphql/todoQueries";
+import { ADD_TODO, GET_TODOS, GET_USERS } from "../Graphql/todoQueries";
 import { TodosVar } from "../Apollo/cache";
 
 export const Filters = () => {
-  console.log(TodosVar());
-  const initState = {
+  // ?? for initial state for adding task
+  const initState_addTask = {
     taskTitle: "",
     createdBy: "",
     assignedTo: "",
     status: "Created",
   };
 
-  const [taskData, setTaskData] = useState(initState);
+  const [taskData, setTaskData] = useState(initState_addTask);
   const [err, setErr] = useState();
   const [activeDrop, setActiveDrop] = useState(0);
   const [active, setActive] = useState(false);
@@ -26,6 +26,18 @@ export const Filters = () => {
     createdBy: "",
     assignTo: "",
     status: "",
+  });
+
+  const {
+    loading: loading_todos,
+    error: error_todos,
+    data: data__todos,
+    refetch,
+  } = useQuery(GET_TODOS, {
+    variables: { filterTitle: "%", sortBy: "" },
+    onCompleted({ getTodo }) {
+      TodosVar(getTodo.todo);
+    },
   });
 
   const { taskTitle, createdBy, assignedTo, status } = taskData;
@@ -177,7 +189,12 @@ export const Filters = () => {
           </div>
 
           {filterData.map(({ id, title, options }, idx) => (
-            <div className="filter" key={id} onClick={() => handleClick(idx)}>
+            <div
+              className="filter"
+              key={id}
+              onMouseEnter={() => handleClick(idx)}
+              onMouseLeave={() => handleClick(idx)}
+            >
               {title} <AiFillCaretDown />
               <div className={`filter-drop ${clicked === idx ? "active" : ""}`}>
                 {options.map((option) => (

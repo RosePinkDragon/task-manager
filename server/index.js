@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 const models = require("./models");
+const casual = require("casual");
 const app = express();
 const port = 3001;
 
@@ -22,6 +23,14 @@ const checkUser = (token) => {
   return user;
 };
 
+const mocks = {
+  User: () => ({
+    id: () => casual.integer(0, 120),
+    email: casual.email,
+    name: casual.name,
+  }),
+};
+
 const startServer = async () => {
   // ?? to mock a server just add in mocks:true as an option to the server.
   // ?? it returns a fixed feilds depending on type
@@ -34,6 +43,7 @@ const startServer = async () => {
       const user = checkUser(token);
       return { user };
     },
+    mocks,
   });
 
   await server.start();

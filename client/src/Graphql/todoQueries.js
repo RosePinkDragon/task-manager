@@ -41,6 +41,12 @@ export const UPDATE_TODO = gql`
       success
       todo {
         id
+        taskTitle
+        createdBy
+        status
+        assignedTo
+        createdAt
+        updatedAt
       }
     }
   }
@@ -59,8 +65,20 @@ export const GOOGLE_LOGIN = gql`
 `;
 
 export const GET_TODOS = gql`
-  query Query($filterTitle: String!, $sortBy: String!) {
-    getTodo(filterTitle: $filterTitle, sortBy: $sortBy) {
+  query Query(
+    $filterTitle: String!
+    $sortBy: String!
+    $order: String!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    getTodo(
+      filterTitle: $filterTitle
+      sortBy: $sortBy
+      order: $order
+      limit: $limit
+      offset: $offset
+    ) {
       count
       todo {
         id
