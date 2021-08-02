@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --config ./jest.config.json",
+    "test:watch": "jest --config ./jest.config.json --watchAll",
+    "test:cover": "jest --config ./jest.config.json --watchAll --coverage",
     "startDev": "nodemon index.js",
     "seq-cli": "npx sequelize-cli",
     "seq": "npx sequelize"
@@ -22,6 +24,7 @@
     "express": "^4.17.1",
     "fs": "^0.0.1-security",
     "graphql": "^15.5.1",
+    "graphql-tools": "^7.0.5",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.12",
@@ -30,5 +33,10 @@
     "sequelize-auto": "^0.8.3",
     "sequelize-cli": "^6.2.0",
     "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "casual": "^1.6.2",
+    "easygraphql-tester": "^6.0.1",
+    "jest": "^27.0.6"
   }
 }

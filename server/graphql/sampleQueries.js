@@ -1,0 +1,103 @@
+const { gql } = require("apollo-server-express");
+
+module.exports.ADD_TODO = gql`
+  mutation CreateTodoMutation(
+    $taskTitle: String!
+    $createdBy: String!
+    $assignedTo: String!
+    $status: String!
+  ) {
+    createTodo(
+      taskTitle: $taskTitle
+      createdBy: $createdBy
+      assignedTo: $assignedTo
+      status: $status
+    ) {
+      taskTitle
+      createdBy
+      assignedTo
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+module.exports.LOGIN_USER = gql`
+  query Query($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      user {
+        name
+        email
+      }
+      token
+    }
+  }
+`;
+
+module.exports.UPDATE_TODO = gql`
+  mutation Query($id: Int!, $status: String!) {
+    updateTodo(id: $id, status: $status) {
+      success
+      todo {
+        id
+        taskTitle
+        createdBy
+        status
+        assignedTo
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+module.exports.GOOGLE_LOGIN = gql`
+  query Query($email: String!, $name: String!) {
+    loginGoogle(email: $email, name: $name) {
+      user {
+        name
+        email
+      }
+      token
+    }
+  }
+`;
+
+module.exports.GET_TODOS = gql`
+  query Query(
+    $filterTitle: String!
+    $sortBy: String!
+    $order: String!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    getTodo(
+      filterTitle: $filterTitle
+      sortBy: $sortBy
+      order: $order
+      limit: $limit
+      offset: $offset
+    ) {
+      count
+      todo {
+        id
+        taskTitle
+        createdBy
+        status
+        assignedTo
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+module.exports.GET_USERS = gql`
+  query Query {
+    getUsers {
+      id
+      name
+    }
+  }
+`;

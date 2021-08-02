@@ -23,6 +23,9 @@ const checkUser = (token) => {
 };
 
 const startServer = async () => {
+  // ?? to mock a server just add in mocks:true as an option to the server.
+  // ?? it returns a fixed feilds depending on type
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
