@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const valid = require("../utils/valid");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
+const { finished } = require("stream");
+const { GraphQLUpload } = require("graphql-upload");
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = ({ name, id, email }) => {
@@ -74,7 +76,7 @@ const resolvers = {
       return { user, token };
     },
 
-    loginUser: async (_, { email, password }, { req }) => {
+    loginUser: async (_, { email, password }) => {
       const user = await models.User.findOne({ where: { email: email } });
       if (user !== null) {
         const auth = await bcrypt.compare(password, user.password);
@@ -87,8 +89,18 @@ const resolvers = {
       throw Error("User Not Found");
     },
   },
-
+  Upload: GraphQLUpload,
   Mutation: {
+    singleUpload: async (parent, { file }) => {
+      const { createReadStream, filename, mimetype, encoding } = await file;
+      const stream = createReadStream();
+      const out = require("fs").createWriteStream("local-file-output.txt");
+      stream.pipe(out);
+      await finished(out);
+      console.log(filename, mimetype, encoding);
+      return { filename, mimetype, encoding };
+    },
+
     createTodo: async (
       _,
       { taskTitle, createdBy, assignedTo, status },
