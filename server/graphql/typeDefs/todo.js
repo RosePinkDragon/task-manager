@@ -1,6 +1,13 @@
 const { gql } = require("apollo-server-express");
 
 const todoDefs = gql`
+  scalar Upload
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
   type Todo {
     id: Int!
     taskTitle: String!
@@ -46,13 +53,17 @@ const todoDefs = gql`
   }
 
   extend type Mutation {
+    singleUpload(file: Upload!): File!
+
     createTodo(
       taskTitle: String!
       createdBy: String!
       assignedTo: String!
       status: String!
     ): Todo!
+
     updateTodo(id: Int!, status: String!): Update!
+
     deleteTodo(id: Int!): Delete!
   }
 `;
